@@ -22,8 +22,10 @@ class Gomoku(Game, Observable):
     def make_move(self, player, position):
         """处理玩家落子"""
         x, y = position
-        self.history.append(self._save_state())  # 保存状态用于悔棋
+        
+        last_state = self._save_state()
         if self.move_strategy.make_move(self.board, x, y, player):
+            self.history.append(last_state)  # 保存状态用于悔棋
             if self.win_condition.check_victory(self.board, x, y, player):
                 self.winner = player
             else:

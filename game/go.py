@@ -22,8 +22,9 @@ class Go(Game):
         """处理玩家落子"""
         self.pass_count = 0  # 重置连续虚着计数
         x, y = position
-        self.history.append(self._save_state())  # 保存状态用于悔棋
+        last_state = self._save_state()
         if self.move_strategy.make_move(self.board, x, y, player):
+            self.history.append(last_state)  # 保存状态用于悔棋
             # 更新提子计数（具体实现留在 MoveStrategy 中）
             # self.captures[player] += 提子数
             self.current_player = (self.current_player + 1) % len(self.players)

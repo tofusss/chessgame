@@ -116,3 +116,47 @@ class GoMoveStrategy(MoveStrategy):
             return False
         board.move_piece(x, y, ".")  # 移除临时放置的棋子
         return True
+    
+class ReversiMoveStrategy:
+    def make_move(self, board, x, y, player):
+        """检查并执行合法的落子操作"""
+        if not self.is_valid_move(board, x, y, player):
+            return False
+        self.flip_pieces(board, x, y, player)
+        board.place_piece(x, y, player)
+        return True
+
+    def is_valid_move(self, board, x, y, player):
+        """检查是否为合法位置"""
+        if not board.is_valid_position(x, y) or board.get_piece(x, y) != ".":
+            return False
+        return any(self.check_direction(board, x, y, player, dx, dy)
+                   for dx, dy in [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)])
+
+    def check_direction(self, board, x, y, player, dx, dy):
+        """检查指定方向是否能翻转棋子"""
+        opponent = "B" if player == "W" else "W"
+        nx, ny = x + dx, y + dy
+        found_opponent = False
+        while board.is_in_board(nx, ny) and board.get_piece(nx, ny) == opponent:
+            found_opponent = True
+            nx += dx
+            ny += dy
+       
+        if found_opponent and board.is_in_board(nx, ny) and board.get_piece(nx, ny) == player:
+            return True
+        return False
+
+    def flip_pieces(self, board, x, y, player):
+        """翻转被夹住的棋子"""
+        opponent = "B" if player == "W" else "W"
+        directions = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        for dx, dy in directions:
+            if self.check_direction(board, x, y, player, dx, dy):
+                nx, ny = x + dx, y + dy
+                while board.get_piece(nx, ny) == opponent:
+                  
+                    board.move_piece(nx, ny, ".")
+                    board.place_piece(nx, ny, player)
+                    nx += dx
+                    ny += dy

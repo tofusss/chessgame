@@ -1,8 +1,10 @@
 from game.factory import GameFactory
-def get_board_size():
+def get_board_size(game_type):
     """获取合法的棋盘大小"""
     while True:
         try:
+            if game_type == "reversi":
+                print("初始棋盘大小推荐为8*8")
             board_size = int(input("请输入棋盘大小（8-19）：").strip())
             if 8 <= board_size <= 19:
                 return board_size
@@ -13,9 +15,9 @@ def get_board_size():
 
 def get_game_type():
     """获取合法的游戏类型"""
-    valid_game_types = {"gomoku", "go"}  # 定义允许的游戏类型
+    valid_game_types = {"gomoku", "go","reversi"}  # 定义允许的游戏类型
     while True:
-        game_type = input("请输入游戏类型（gomoku, go）：").strip().lower()
+        game_type = input("请输入游戏类型（gomoku, go, reversi）：").strip().lower()
         if game_type in valid_game_types:
             return game_type
         elif game_type == 'q':  # 判断是否退出
@@ -30,10 +32,11 @@ def main():
         print("支持的游戏类型：")
         print("1. gomoku - 五子棋")
         print("2. go - 围棋")
+        print("3. reversi - 黑白棋")
         print("输入 'q' 关闭游戏")
 
         game_type = get_game_type()  # 调用合法输入检查函数
-        board_size = get_board_size()  # 之前已实现的棋盘大小检查函数
+        board_size = get_board_size(game_type)  # 之前已实现的棋盘大小检查函数
 
         try:
             game = GameFactory.create_game(game_type, board_size)
