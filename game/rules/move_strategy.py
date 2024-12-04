@@ -22,6 +22,11 @@ class GomokuMoveStrategy(MoveStrategy):
         else:
             print("落子无效，位置已被占用或超出边界！")
             return False
+    def is_valid_move(self, board, x, y,player):
+        """检查是否为合法位置"""
+        if not board.is_valid_position(x, y) or board.get_piece(x, y) != ".":
+            return False
+        return True
         
 class GoMoveStrategy(MoveStrategy):
     def make_move(self, board, x, y, player):

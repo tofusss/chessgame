@@ -13,3 +13,4 @@ class GameFactory:
             return Reversi(board_size)
         else:
             raise ValueError(f"不支持的游戏类型: {game_type}")
+        

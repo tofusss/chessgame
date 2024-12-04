@@ -8,13 +8,9 @@ class Reversi(Game, Observable):
         super().__init__(board_size)  # 黑白棋默认棋盘大小为8*8
         Observable.__init__(self)
         self.board = Board(board_size)
+        self.gametype = "reversi"
         self.players = ["B", "W"]  # 黑白棋玩家
-        self.current_player = 0
-        self.history = []  # 用于悔棋功能
-        self.winner = None
         self.move_strategy = ReversiMoveStrategy()
-        #self.win_condition = OthelloWinCondition()
-        #self.initialize_board()  # 初始化棋盘
 
     def initialize_board(self):
         """初始化棋盘，设置中心位置的棋子"""
@@ -29,11 +25,13 @@ class Reversi(Game, Observable):
     def make_move(self, player, position):
         """处理玩家落子"""
         x, y = position
-        last_state = self._save_state()
+        last_state = self._save_state(self.last_player,self.last_move)
 
         # 使用策略检查并执行落子逻辑
         if self.move_strategy.make_move(self.board, x, y, player):
             self.history.append(last_state)  # 保存状态用于悔棋
+            self.last_player = player
+            self.last_move = (x,y)
             #print("落子")
             if not self.has_legal_moves(self.players[(self.current_player + 1) % len(self.players)]):
                 print(f"玩家 {self.players[(self.current_player + 1) % len(self.players)]} 无合法棋步，跳过回合！")

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from player.account_manager import AccountManager
 class Command(ABC):
     """命令基类，所有具体命令都应继承此类"""
 
@@ -19,6 +20,7 @@ class MoveCommand(Command):
             self.game.make_move(self.game.players[self.game.current_player], (x, y))
         except ValueError:
             print("输入格式错误，请重新输入！")
+
 class PassCommand(Command):
     def __init__(self, game,game_type):
         self.game = game
@@ -40,6 +42,9 @@ class ResignCommand(Command):
         """执行认输逻辑"""
         self.game.winner = self.game.players[(self.game.players.index(self.player) + 1) % len(self.game.players)]
         print(f"玩家 {self.player} 投子认负，游戏结束！")
+        self.game.player_[0].update_stats(win=(self.game.winner == self.game.players[0]))
+        self.game.player_[1].update_stats(win=(self.game.winner == self.game.players[1]))
+        AccountManager().save()  # 保存所有账户到本地文件
 
 class RestartGameCommand(Command):
     def __init__(self, game):
@@ -57,3 +62,11 @@ class UndoMoveCommand(Command):
     def execute(self):
         """调用游戏实例的悔棋方法"""
         self.game.undo_move()
+
+class ReplayCommand(Command):
+    def __init__(self, game):
+        self.game = game
+
+    def execute(self):
+        """调用游戏实例的重放方法"""
+        self.game.replay_game()

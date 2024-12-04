@@ -2,19 +2,13 @@ class Board:
     def __init__(self, size):
         self.size = size
         self.grid = [['.' for _ in range(size)] for _ in range(size)]
-
-    # def display(self):
-    #     """打印当前棋盘状态"""
-    #     print("   " + " ".join(f"{i:2}" for i in range(self.size)))
-    #     for i, row in enumerate(self.grid):
-    #         print(f"{i:2} " + " ".join(row))
-    #     print()
     
     def display(self):
         """打印棋盘"""
-        print("  " + " ".join(str(i) for i in range(self.size)))
+        #print(self.grid)
+        print("  " + " ".join(str(i%10) for i in range(self.size)))
         for y, row in enumerate(self.grid):
-            print(str(y) + " " + " ".join(row))
+            print(str(y%10) + " " + " ".join(row))
         print()
 
     def place_piece(self, x, y, piece):

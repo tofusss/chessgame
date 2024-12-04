@@ -11,9 +11,6 @@ class Gomoku(Game, Observable):
         Observable.__init__(self)
         self.board = Board(board_size)
         self.players = ["X", "O"]
-        self.current_player = 0
-        self.history = []  # 用于悔棋功能
-        self.winner = None
         self.gametype = "gomoku"
         # 使用传入的胜负判断策略，默认为 GomokuWinCondition
         self.win_condition = GomokuWinCondition()
@@ -22,10 +19,11 @@ class Gomoku(Game, Observable):
     def make_move(self, player, position):
         """处理玩家落子"""
         x, y = position
-        
-        last_state = self._save_state()
+        last_state = self._save_state(self.last_player,self.last_move)
         if self.move_strategy.make_move(self.board, x, y, player):
             self.history.append(last_state)  # 保存状态用于悔棋
+            self.last_player = player
+            self.last_move = (x,y)
             if self.win_condition.check_victory(self.board, x, y, player):
                 self.winner = player
             else:
@@ -38,4 +36,3 @@ class Gomoku(Game, Observable):
             return True
         print("落子无效，请重新输入！")
         return False
-

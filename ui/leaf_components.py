@@ -16,6 +16,8 @@ class OperationTips(Component):
             "restart: 重新开始",
             "show: 显示提示",
             "hide: 隐藏提示",
+            "save: 保存局面",
+            "load: 加载局面",
             "quit: 退出游戏"
         ]
         if self.game_type == "go":
@@ -43,4 +45,30 @@ class StatusBar(Component):
     def display(self):
         if self.visible:
             current_player = self.game.players[self.game.current_player]
-            print(f"\n当前状态：轮到玩家 {current_player} 落子")
+            if self.game.current_player == 0:
+                print(f"\n当前状态：轮到玩家 {self.game.player_[0].username} 落子({current_player})")
+            else:
+                print(f"\n当前状态：轮到玩家 {self.game.player_[1].username} 落子({current_player})")
+
+class AccountBar(Component):
+    """账户状态栏组件，显示玩家账户信息与战绩"""
+    def __init__(self, game):
+        super().__init__()
+        self.game = game  # 游戏实例，包含 player1 和 player2
+
+    def display(self):
+        if self.visible:
+            player1 = self.game.player_[0]
+            player2 = self.game.player_[1]
+
+            print("======== 账户状态栏 ========")
+            # 显示玩家1账户信息
+            print(f"玩家1: {player1.get_username()}")
+            stats1 = player1.get_stats()
+            print(f"总场次: {stats1['total_games']} | 胜场: {stats1['wins']}")
+
+            # 显示玩家2账户信息
+            print(f"玩家2: {player2.get_username()}")
+            stats2 = player2.get_stats()
+            print(f"总场次: {stats2['total_games']} | 胜场: {stats2['wins']}")
+            print("===========================")

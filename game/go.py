@@ -12,7 +12,6 @@ class Go(Game):
         self.players = ["X", "O"]
         self.captures = {"X": 0, "O": 0}  # 提子计数
         self.pass_count = 0  # 连续虚着次数
-        self.winner = None
         self.gametype = "go"
         # 使用传入的落子策略和胜负判断策略
         self.move_strategy = GoMoveStrategy()
@@ -22,9 +21,12 @@ class Go(Game):
         """处理玩家落子"""
         self.pass_count = 0  # 重置连续虚着计数
         x, y = position
-        last_state = self._save_state()
+        last_state = self._save_state(self.last_player,self.last_move)
         if self.move_strategy.make_move(self.board, x, y, player):
+            
             self.history.append(last_state)  # 保存状态用于悔棋
+            self.last_player = player
+            self.last_move = (x,y)
             # 更新提子计数（具体实现留在 MoveStrategy 中）
             # self.captures[player] += 提子数
             self.current_player = (self.current_player + 1) % len(self.players)
